@@ -43,6 +43,10 @@ if start_button:
     while True:
         ret, frame = cap.read()
         frame_counter+=1
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        img_pil = Image.fromarray(frame)
+        stframe.image(img_pil)
+        
 
         if frame_counter%15!=0 and frame_counter!=1:
             continue
@@ -83,9 +87,9 @@ if start_button:
         # cv2.imshow('emotion_detector', frame)
         # if cv2.waitKey(1) & 0xFF==ord('q'):
         #     break
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img_pil = Image.fromarray(frame)
-        stframe.image(img_pil)
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # img_pil = Image.fromarray(frame)
+        # stframe.image(img_pil)
 
         if stop_button:
             break
