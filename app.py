@@ -4,7 +4,6 @@ from keras.preprocessing.image import img_to_array
 from keras.preprocessing import image
 import cv2
 import numpy as np 
-import threading 
 # from playsound import playsound
 import pygame
 import streamlit as st
@@ -31,8 +30,8 @@ def play_music(emotion):
     pygame.mixer.music.play()
     pygame.time.wait(3000)
     pygame.mixer.music.stop()
-cap=cv2.VideoCapture(0)
-# cap=cv2.VideoCapture('videos/emovideo2.mov')
+# cap=cv2.VideoCapture(0)
+cap=cv2.VideoCapture('videos/emovideo2.mov')
 if not cap.isOpened():
     print("Error: Could not open video capture.")
     exit()
@@ -73,7 +72,7 @@ if start_button:
                 prediction = emotion_classifier.predict(roi)[0]
                 label = emotion_labels[prediction.argmax()]
                 label_position = (x,y)
-                cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale,(0,255,0),2)
+                # cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale,(0,255,0),2)
 
                 # music_file = emotion_music.get(label)
                 # if music_file:
@@ -82,12 +81,13 @@ if start_button:
                     # threading.Thread(target = play_music, args = (music_file,)).start()
                     # sleep(5)
                 # if label!=last_played_label:
+                # emotion_text.markdown(f'')
                 if music_thread is None or not music_thread.is_alive(): 
-                    emotion_text.text(f'detected_emotion_for_music: {label}')
+                    emotion_text.markdown(f'detected_emotion_for_music: {label}')
                     music_thread = threading.Thread(target = play_music, args =(label,))
                     music_thread.start()
                     last_played_label = label
-           
+                cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale,(0,255,0),2)
 
 
 
