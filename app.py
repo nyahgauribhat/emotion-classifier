@@ -30,8 +30,8 @@ def play_music(music_file):
     pygame.mixer.music.play()
     sleep(3)
     pygame.mixer.music.stop()
-# cap=cv2.VideoCapture(0)
-cap=cv2.VideoCapture('videos/emovideo2.mov')
+cap=cv2.VideoCapture(0)
+# cap=cv2.VideoCapture('videos/emovideo2.mov')
 if not cap.isOpened():
     print("Error: Could not open video capture.")
     exit()
@@ -44,8 +44,8 @@ if start_button:
         ret, frame = cap.read()
         frame_counter+=1
 
-        if frame_counter%15!=0 and frame_counter!=1:
-            continue
+        # if frame_counter%15!=0 and frame_counter!=1:
+        #     continue
         # if not ret:
         #     print("Error: Failed to capture image")
         #     continue
@@ -55,7 +55,7 @@ if start_button:
         fontscale = 2.5
         for (x,y,w,h) in faces:
             print(w,h)
-            if w<300 or h<300:
+            if w<100 or h<100:
                 continue
             cv2.rectangle(frame, (x,y),(x+w, y+h), (0,255,255), 2)
             roi_gray = gray[y:y+h, x:x+w]
