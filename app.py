@@ -31,8 +31,8 @@ def play_music(emotion):
     pygame.mixer.music.play()
     pygame.time.wait(3000)
     pygame.mixer.music.stop()
-# cap=cv2.VideoCapture(0)
-cap=cv2.VideoCapture('videos/emovideo2.mov')
+cap=cv2.VideoCapture(0)
+# cap=cv2.VideoCapture('videos/emovideo2.mov')
 if not cap.isOpened():
     print("Error: Could not open video capture.")
     exit()
