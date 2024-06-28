@@ -9,6 +9,7 @@ import threading
 import pygame
 import streamlit as st
 from PIL import Image
+import threading
 
 st.title('emotion detector')
 pygame.mixer.init()
@@ -25,10 +26,10 @@ emotion_music = {'angry':'music/angry.mp3',
                  'surprised' :'music/surprised.mp3' }
 # def play_music(music_file): 
 #     playsound(music_file)
-def play_music(music_file): 
-    pygame.mixer.music.load(music_file)
+def play_music(emotion): 
+    pygame.mixer.music.load(emotion_music[emotion])
     pygame.mixer.music.play()
-    sleep(3)
+    pygame.time.wait(3000)
     pygame.mixer.music.stop()
 # cap=cv2.VideoCapture(0)
 cap=cv2.VideoCapture('videos/emovideo2.mov')
@@ -40,12 +41,15 @@ start_button = st.button('start detection')
 stop_button = st.button('stop detection', key='stop_button')
 if start_button:
     stframe=st.empty()
+    music_thread = None
+    last_played_label = None
+    emotion_text=st.empty()
     while True:
         ret, frame = cap.read()
         frame_counter+=1
 
-        if frame_counter%15!=0 and frame_counter!=1:
-            continue
+        # if frame_counter%15!=0 and frame_counter!=1:   
+        #     continue
         # if not ret:
         #     print("Error: Failed to capture image")
         #     continue
@@ -71,12 +75,23 @@ if start_button:
                 label_position = (x,y)
                 cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale,(0,255,0),2)
 
-                music_file = emotion_music.get(label)
-                if music_file:
-                    play_music(music_file)
+                # music_file = emotion_music.get(label)
+                # if music_file:
+                #     play_music(music_file)
 
                     # threading.Thread(target = play_music, args = (music_file,)).start()
                     # sleep(5)
+                # if label!=last_played_label:
+                if music_thread is None or not music_thread.is_alive(): 
+                    emotion_text.text(f'detected_emotion_for_music: {label}')
+                    music_thread = threading.Thread(target = play_music, args =(label,))
+                    music_thread.start()
+                    last_played_label = label
+           
+
+
+
+
             else:
                 cv2.putText(frame, 'no faces', (30,80), cv2.FONT_HERSHEY_SIMPLEX, fontscale,(0,255,0),2)
 
@@ -92,8 +107,5 @@ if start_button:
 cap.release()
 cv2.destroyAllWindows()
     
-
-
-
 
 
