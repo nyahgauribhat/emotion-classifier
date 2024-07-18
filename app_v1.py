@@ -32,38 +32,51 @@ st.markdown(
     """
     <style> 
     .stApp{
-        background-color: #b5e200;
+        background-color: #e0e0e0;
         font-family: 'Arial', sans-serif; 
 
     }
     .title{
         text-align: center; 
-        color: black;
+        color: #333333;
         font-size: 2.5em;
         margin-bottom: 20px;
         animation: fadeIn 2s;
     }
     .header{
         text-align: center;
-        background-color: red;
+        background-color: #4caf50;
         color: white;
         padding: 15px;
-        font-size: 2em;
+        font-size: 2.5em;
         font-weight: bold;
+        border-radius: 10px;
+        margin-bottom: 20px;
 
     }
     .sidebar .sidebar-content{
-        background-color: white;
+        background-color: #4caf50;
         color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    .sidebar .sidebar-title{
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 10px;
+
     }
     .footer{
         text-align: center;
-        background-color: red; 
+        background-color: #4caf50;
         color: white;
         padding: 10px;
         position:fixed;
         bottom: 0;
         width: 100%;
+        border-radius: 10px;
+        margin-top: 20px;
     }
     .button{
         display: flex;
@@ -74,18 +87,21 @@ st.markdown(
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .emotion-text{
         text-align: center;
         font-size: 2em;
-        color: black;
+        color: #333333;
         margin-top: 20px;
         animation: fadeIn 1s;
     }
     .progress{
         text-align: center;
         font-size: 1.2em;
-        color: black;
+        color: #333333;
         margin-top: 20px;
     }
     @keyframes fadeIn{
@@ -107,8 +123,8 @@ st.sidebar.title('Controls')
 start_button = st.sidebar.button('Start Detection')
 stop_button = st.sidebar.button('Stop Detection',key = 'stop_button')
 music_toggle = st.sidebar.checkbox('Enable Music', value = True)
-cap=cv2.VideoCapture(0)
-# cap=cv2.VideoCapture('videos/emovideo2.mov')
+# cap=cv2.VideoCapture(0)
+cap=cv2.VideoCapture('videos/emovideo2.mov')
 if not cap.isOpened():
     print("Error: Could not open video capture.")
     exit()
