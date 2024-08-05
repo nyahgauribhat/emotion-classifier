@@ -13,19 +13,19 @@ pygame.mixer.init()
 
 face_classifier = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
 emotion_classifier = load_model('model.h5')
-emotion_labels = ['angry', 'disgust', 'fear','happy','neutral','sad', 'surprised']
-emotion_music = {'angry':'music/angry.mp3',
-                 'disgust': 'music/disgust.mp3',
-                 'fear':'music/fear.mp3',
-                 'happy':'music/happy.mp3',
-                 'neutral':'music/neutral.mp3',
-                 'sad':'music/sad.mp3', 
-                 'surprised' :'music/surprised.mp3' }
+emotion_labels = ['Angry', 'Disgust', 'Fear','Happy','Neutral','Sad', 'Surprised']
+emotion_music = {'Angry':'music/angry.mp3',
+                 'Disgust': 'music/disgust.mp3',
+                 'Fear':'music/fear.mp3',
+                 'Happy':'music/happy.mp3',
+                 'Neutral':'music/neutral.mp3',
+                 'Sad':'music/sad.mp3', 
+                 'Surprised' :'music/surprised.mp3' }
 
 def play_music(emotion): 
     pygame.mixer.music.load(emotion_music[emotion])
     pygame.mixer.music.play()
-    pygame.time.wait(3000)
+    pygame.time.wait(1000*60*2)
     pygame.mixer.music.stop()
 
 st.markdown(
