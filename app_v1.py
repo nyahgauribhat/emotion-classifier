@@ -24,6 +24,14 @@ emotion_music = {'angry':'music/angry.mp3',
                  'sad':'music/sad.mp3', 
                  'surprised' :'music/surprised.mp3' }
 
+def load_html(file_path):
+    with open('emotion_text'+file_path+'.html', 'r') as file:
+        return file.read()
+
+# Function to display the HTML content in Streamlit
+def display_html(content):
+    st.markdown(content, unsafe_allow_html=True)
+
 # Function to play music for the detected emotion
 def play_music(emotion):
     pygame.mixer.music.load(emotion_music[emotion])
@@ -81,6 +89,9 @@ if start_button:
                     music_thread = threading.Thread(target=play_music, args=(label,))
                     music_thread.start()
                     last_played_label = label
+
+                    html_content = load_html(label)
+                    display_html(html_content)
             else:
                 cv2.putText(frame, 'No Faces', (30, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
