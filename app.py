@@ -30,8 +30,8 @@ def play_music(emotion):
     pygame.mixer.music.play()
     pygame.time.wait(3000)
     pygame.mixer.music.stop()
-# cap=cv2.VideoCapture(0)
-cap=cv2.VideoCapture('videos/emovideo2.mov')
+cap=cv2.VideoCapture(0)
+# cap=cv2.VideoCapture('videos/emovideo2.mov')
 if not cap.isOpened():
     print("Error: Could not open video capture.")
     exit()
@@ -58,7 +58,7 @@ if start_button:
         fontscale = 2.5
         for (x,y,w,h) in faces:
             print(w,h)
-            if w<300 or h<300:
+            if w<100 or h<100:
                 continue
             cv2.rectangle(frame, (x,y),(x+w, y+h), (0,255,255), 2)
             roi_gray = gray[y:y+h, x:x+w]
@@ -81,13 +81,12 @@ if start_button:
                     # threading.Thread(target = play_music, args = (music_file,)).start()
                     # sleep(5)
                 # if label!=last_played_label:
-                # emotion_text.markdown(f'')
                 if music_thread is None or not music_thread.is_alive(): 
-                    emotion_text.markdown(f'detected_emotion_for_music: {label}')
+                    emotion_text.text(f'detected_emotion_for_music: {label}')
                     music_thread = threading.Thread(target = play_music, args =(label,))
                     music_thread.start()
                     last_played_label = label
-                cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale,(0,255,0),2)
+           
 
 
 
@@ -106,5 +105,5 @@ if start_button:
             break
 cap.release()
 cv2.destroyAllWindows()
-
+    
 

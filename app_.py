@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import pygame
 from PIL import Image
-import threading
 
 # Initialize pygame mixer
 pygame.mixer.init()
@@ -14,29 +13,23 @@ pygame.mixer.init()
 face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 classifier = load_model('model.h5')
 
-# Define the emotion labels and the corresponding music files
-emotion_labels = ['angry', 'disgust', 'fear','happy','neutral','sad', 'surprised']
-emotion_music = {'angry':'music/angry.mp3',
-                 'disgust': 'music/disgust.mp3',
-                 'fear':'music/fear.mp3',
-                 'happy':'music/happy.mp3',
-                 'neutral':'music/neutral.mp3',
-                 'sad':'music/sad.mp3', 
-                 'surprised' :'music/surprised.mp3' }
+# Define the emotion labels and the corresponding sound files
+emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
+emotion_sounds = {
+    'Angry': 'sounds/angry.wav',
+    'Disgust': 'sounds/disgust.wav',
+    'Fear': 'sounds/fear.wav',
+    'Happy': 'sounds/happy.wav',
+    'Neutral': 'sounds/neutral.wav',
+    'Sad': 'sounds/sad.wav',
+    'Surprise': 'sounds/surprise.wav'
+}
 
-def load_html(file_path):
-    with open('emotion_text'+file_path+'.html', 'r') as file:
-        return file.read()
-
-# Function to display the HTML content in Streamlit
-def display_html(content):
-    st.markdown(content, unsafe_allow_html=True)
-
-# Function to play music for the detected emotion
-def play_music(emotion):
-    pygame.mixer.music.load(emotion_music[emotion])
+# Function to play sound for the detected emotion
+def play_sound(emotion):
+    pygame.mixer.music.load(emotion_sounds[emotion])
     pygame.mixer.music.play()
-    pygame.time.wait(3000)  # Play for 5 seconds
+    sleep(5)
     pygame.mixer.music.stop()
 
 # Streamlit app
@@ -44,24 +37,17 @@ st.title("Real-Time Emotion Detector")
 
 # Create a video capture object
 cap = cv2.VideoCapture(0)
+frame_counter = 0
 
-# start_detection = st.button("Start Detection")
-# stop_detection = False
-
-start_button = st.button('start detection')
-stop_button = st.button('stop detection', key='stop_button')
-
-if start_button:
+if st.button("Start Detection"):
     stframe = st.empty()
-    music_thread = None
-    last_played_label = None
-    emotion_text = st.empty()
+    while True:
+        _, frame = cap.read()
+        frame_counter += 1
 
-    while not stop_button:
-        ret, frame = cap.read()
-        if not ret:
-            st.error("Failed to capture image")
-            break
+        # Skip processing for 3 frames, process every 4th frame
+        if frame_counter % 4 != 0:
+            continue
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_classifier.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
@@ -82,16 +68,8 @@ if start_button:
                 label_position = (x, y)
                 cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-                # Play the corresponding music for 5 seconds in a separate thread
-                # if label != last_played_label:
-                if music_thread is None or not music_thread.is_alive():
-                    emotion_text.text(f"Current Emotion: {label}")
-                    music_thread = threading.Thread(target=play_music, args=(label,))
-                    music_thread.start()
-                    last_played_label = label
-
-                    html_content = load_html(label)
-                    display_html(html_content)
+                # Play the corresponding sound for 5 seconds
+                play_sound(label)
             else:
                 cv2.putText(frame, 'No Faces', (30, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
@@ -102,8 +80,8 @@ if start_button:
         # Display the frame
         stframe.image(img_pil)
 
-        # Check if "Stop Detection" button is pressed
-        if stop_button:
+        # Break the loop if 'q' is pressed
+        if st.button("Stop Detection"):
             break
 
 # Release video capture and close all windows

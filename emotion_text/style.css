@@ -1,0 +1,50 @@
+#section1
+{
+    display: flex;
+    margin-top: 15px;
+    margin-left: 30px;
+
+}
+#textnexttoemojiface
+{
+    margin-left: 15px;
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+}
+#text
+{
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+    margin-left: 30px;
+
+}
+#text2
+{
+    margin-top: 15px;
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+    margin-left: 30px;
+
+}
+#text3
+{
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+    margin-left: 30px;
+    margin-top: 15px;
+
+}
+#overtext
+{
+    font-family: "Poppins", sans-serif;
+    font-size: 30px;
+    text-align: center;
+    margin-top: -200px;
+
+}
+#emojis
+{
+    display:flex;
+    justify-content: center;
+    margin-top: 80px;
+}

@@ -1,10 +1,10 @@
 from keras.models import load_model
 from time import sleep
 from keras.preprocessing.image import img_to_array
-from keras.preprocessing import image
+# from keras.preprocessing import image
 import cv2
 import numpy as np 
-import threading 
+# import threading
 # from playsound import playsound
 import pygame
 
@@ -49,7 +49,7 @@ while True:
     fontscale = 2.5
     for (x,y,w,h) in faces:
         print(w,h)
-        if w<300 or h<300:
+        if w<100 or h<100:
             continue
         cv2.rectangle(frame, (x,y),(x+w, y+h), (0,255,255), 2)
         roi_gray = gray[y:y+h, x:x+w]
