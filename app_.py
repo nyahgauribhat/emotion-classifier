@@ -29,7 +29,6 @@ emotion_sounds = {
 def play_sound(emotion):
     pygame.mixer.music.load(emotion_sounds[emotion])
     pygame.mixer.music.play()
-    sleep(5)
     pygame.mixer.music.stop()
 
 # Streamlit app

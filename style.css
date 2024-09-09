@@ -2,20 +2,23 @@
 {
     display: flex;
     margin-top: 15px;
-    margin-left: 30px;
+    font-size: 20px;
+    font-weight: 400;
+    margin-left: 300px;
+    text-align: center;
+
 
 }
-#textnexttoemojiface
-{
-    margin-left: 15px;
+h1{
     font-family: "Poppins", sans-serif;
-    font-size: 20px;
+
 }
 #text
 {
     font-family: "Poppins", sans-serif;
     font-size: 20px;
     margin-left: 30px;
+    line-height: 2.5;
 
 }
 #text2
@@ -24,6 +27,8 @@
     font-family: "Poppins", sans-serif;
     font-size: 15px;
     margin-left: 30px;
+    line-height: 2.5;
+    margin-right:30px;
 
 }
 #text3
@@ -50,6 +55,8 @@
 }
 #image
 {
-    display: flex;
-    justify-content: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
 }
