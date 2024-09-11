@@ -28,21 +28,24 @@ emotion_classifier = load_emotion_classifier()
 
 emotion_labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprised']
 emotion_music = {
-    'angry': 'music/angry.mp3',
+    'angry': 'music/angry.wav',
     'disgust': 'music/disgust.mp3',
-    'fear': 'music/fear.mp3',
-    'happy': 'music/happy.mp3',
-    'neutral': 'music/neutral.mp3',
-    'sad': 'music/sad.mp3',
-    'surprised': 'music/surprised.mp3'
+    'fear': 'music/fear.wav',
+    'happy': 'music/happy.wav',
+    'neutral': 'music/neutral.wav',
+    'sad': 'music/sad.wav',
+    'surprised': 'music/surprised.wav'
 }
 
+# st.image("static/poster.png")
+         
 def load_html(file_path):
-    with open('emotion_text/' + file_path + '.html', 'r') as file:
+    with open('static/emotion_text/' + file_path + '.html', 'r') as file:
         return file.read()
 
 def display_html(content, placeholder):
-    placeholder.markdown(content, unsafe_allow_html=True)
+    # placeholder.markdown(content, unsafe_allow_html=True)
+    placeholder.html(content)
 
 def play_music(emotion):
     pygame.mixer.music.load(emotion_music[emotion])
@@ -145,7 +148,6 @@ st.sidebar.title('Controls')
 start_button = st.sidebar.button('Start Detection')
 stop_button = st.sidebar.button('Stop Detection', key='stop_button')
 music_toggle = st.sidebar.checkbox('Enable Music', value=True)
-cap = cv2.VideoCapture(1)
 audio_start_time = None
 
 def addSecs(tm, secs):
@@ -153,9 +155,7 @@ def addSecs(tm, secs):
     fulldate = fulldate + datetime.timedelta(seconds=secs)
     return fulldate.time()
 
-if not cap.isOpened():
-    st.error("Error: Could not open video capture.")
-    exit()
+
 
 if start_button:
     start_time = time.time()
@@ -165,14 +165,22 @@ if start_button:
     emotion_text = st.empty()
     progress_bar = st.progress(0)
     html_content_area = st.empty()
+    cap = cv2.VideoCapture(1)
+    if not cap.isOpened():
+        st.error("Error: Could not open video capture.")
+        exit()
 
     while True:
         if audio_start_time!=None:
             restart_time = addSecs(audio_start_time,10)
             if(datetime.datetime.now().time()<restart_time):
+                if cap.isOpened():
+                    cap.release()
+                    cv2.destroyAllWindows()
                 continue
         if audio_start_time!=None:
             pygame.mixer.music.stop()
+        cap = cv2.VideoCapture(1)
         ret, frame = cap.read()
         if not ret:
             st.error("Error: Could not read frame from video capture.")
@@ -224,5 +232,5 @@ if start_button:
                 
 
 
-cap.release()
-cv2.destroyAllWindows()
+# cap.release()
+# cv2.destroyAllWindows()
