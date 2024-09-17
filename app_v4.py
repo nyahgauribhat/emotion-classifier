@@ -37,7 +37,7 @@ emotion_music = {
     'surprised': 'music/surprised.wav'
 }
 
-# st.image("static/poster.png")
+st.image("static/poster.png")
          
 def load_html(file_path):
     with open('static/emotion_text/' + file_path + '.html', 'r') as file:
@@ -138,10 +138,16 @@ st.markdown(
 
 with open ('intro.html','r') as file: 
     html_content = file.read()
+
+with open('./static/emotion_text/style.css') as f:
+    css = f.read()
+
+# print(css)
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
     
 # st.markdown('<div class="header"> Emotion Detector Application </div>', unsafe_allow_html=True)
-print(html_content)
-st.markdown(html_content, unsafe_allow_html=True)
+# print(html_content)
+# st.markdown(html_content, unsafe_allow_html=True)
 
 
 st.sidebar.title('Controls')
@@ -165,19 +171,21 @@ if start_button:
     emotion_text = st.empty()
     progress_bar = st.progress(0)
     html_content_area = st.empty()
-    cap = cv2.VideoCapture(1)
-    if not cap.isOpened():
-        st.error("Error: Could not open video capture.")
-        exit()
+    # cap = cv2.VideoCapture(1)
+    # if not cap.isOpened():
+    #     st.error("Error: Could not open video capture.")
+    #     exit()
 
     while True:
         if audio_start_time!=None:
             restart_time = addSecs(audio_start_time,10)
             if(datetime.datetime.now().time()<restart_time):
-                if cap.isOpened():
+                if cap!=None and cap.isOpened():
                     cap.release()
                     cv2.destroyAllWindows()
+                    # stframe = st.empty()
                 continue
+
         if audio_start_time!=None:
             pygame.mixer.music.stop()
         cap = cv2.VideoCapture(1)
@@ -216,13 +224,13 @@ if start_button:
                         music_thread.start()
                         audio_start_time = datetime.datetime.now().time()
                         last_played_label = label
-
                 cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0, 255, 0), 2)
             else:
                 cv2.putText(frame, 'no faces', (30, 80), cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0, 255, 0), 2)
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         img_pil = Image.fromarray(frame)
+        stframe.empty()
         stframe.image(img_pil, use_column_width=True)
 
         if stop_button:
