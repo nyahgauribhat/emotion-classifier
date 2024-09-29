@@ -4,7 +4,6 @@
     margin-top: 15px;
     font-size: 20px;
     font-weight: 400;
-    margin-left: 300px;
     text-align: center;
 
 
@@ -17,7 +16,6 @@ h1{
 {
     font-family: "Poppins", sans-serif;
     font-size: 20px;
-    margin-left: 30px;
     line-height: 2.5;
 
 }
@@ -26,16 +24,13 @@ h1{
     margin-top: 15px;
     font-family: "Poppins", sans-serif;
     font-size: 15px;
-    margin-left: 30px;
     line-height: 2.5;
-    margin-right:30px;
 
 }
 #text3
 {
     font-family: "Poppins", sans-serif;
     font-size: 15px;
-    margin-left: 30px;
     margin-top: 15px;
 
 }
@@ -44,7 +39,7 @@ h1{
     font-family: "Poppins", sans-serif;
     font-size: 30px;
     text-align: center;
-    margin-top: -200px;
+    margin-top: -85px;
 
 }
 #emojis
@@ -54,9 +49,7 @@ h1{
     margin-top: 80px;
 }
 #image
-{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-
-}
+    {
+        display: flex;
+        justify-content: center;
+      }

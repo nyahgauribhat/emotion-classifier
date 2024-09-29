@@ -26,18 +26,18 @@ def load_emotion_classifier():
 
 emotion_classifier = load_emotion_classifier()
 
-emotion_labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprised']
+emotion_labels = ['angry','disgust', 'fear','happy', 'neutral', 'sad', 'surprised']
 emotion_music = {
     'angry': 'music/angry.wav',
-    'disgust': 'music/disgust.mp3',
-    'fear': 'music/fear.wav',
+    'disgust': 'music/angry.wav',
+    'fear': 'music/angry.wav',
     'happy': 'music/happy.wav',
     'neutral': 'music/neutral.wav',
     'sad': 'music/sad.wav',
     'surprised': 'music/surprised.wav'
 }
 
-st.image("static/poster.png")
+placeholder = st.image("static/poster.png")
          
 def load_html(file_path):
     with open('static/emotion_text/' + file_path + '.html', 'r') as file:
@@ -46,6 +46,10 @@ def load_html(file_path):
 def display_html(content, placeholder):
     # placeholder.markdown(content, unsafe_allow_html=True)
     placeholder.html(content)
+    with open('./static/emotion_text/style.css') as f:
+        css = f.read()
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
 
 def play_music(emotion):
     pygame.mixer.music.load(emotion_music[emotion])
@@ -57,9 +61,18 @@ def play_music(emotion):
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+	html, body, [class*="css"]  {
+	font-family: 'Poppins', sans-serif;
+	}
     .stApp {
-        background-color: #e0e0e0;
-        font-family: 'Arial', sans-serif;
+        background-color: white;
+        font-family: 'Poppins', sans-serif;
+    }
+    .st-emotion-cache-1ny7cjd
+    {
+    font-family: 'Poppins', sans-serif;
     }
     .title {
         text-align: center;
@@ -67,6 +80,7 @@ st.markdown(
         font-size: 2.5em;
         margin-bottom: 20px;
         animation: fadeIn 2s;
+        font-family: 'Poppins', sans-serif;
     }
     .header {
         text-align: center;
@@ -77,18 +91,21 @@ st.markdown(
         font-weight: bold;
         border-radius: 10px;
         margin-bottom: 20px;
+         font-family: 'Poppins', sans-serif;
     }
     .sidebar .sidebar-content {
-        background-color: #4caf50;
+        background-color: white:
         color: white;
         padding: 20px;
         border-radius: 10px;
         margin-bottom: 10px;
+         font-family: 'Poppins', sans-serif;
     }
     .sidebar .sidebar-title {
         font-size: 1.5em;
         font-weight: bold;
         margin-bottom: 10px;
+         font-family: 'Poppins', sans-serif;
     }
     .footer {
         text-align: center;
@@ -100,11 +117,13 @@ st.markdown(
         width: 100%;
         border-radius: 10px;
         margin-top: 20px;
+         font-family: 'Poppins', sans-serif;
     }
     .button {
         display: flex;
         justify-content: center;
         margin-top: 20px;
+         font-family: 'Poppins', sans-serif;
     }
     .video-frame {
         display: flex;
@@ -120,6 +139,7 @@ st.markdown(
         color: #333333;
         margin-top: 20px;
         animation: fadeIn 1s;
+         font-family: 'Poppins', sans-serif;
     }
     .progress {
         text-align: center;
@@ -138,21 +158,16 @@ st.markdown(
 
 with open ('intro.html','r') as file: 
     html_content = file.read()
-
-with open('./static/emotion_text/style.css') as f:
-    css = f.read()
-
-# print(css)
-st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
     
 # st.markdown('<div class="header"> Emotion Detector Application </div>', unsafe_allow_html=True)
 # print(html_content)
 # st.markdown(html_content, unsafe_allow_html=True)
 
-
 st.sidebar.title('Controls')
 start_button = st.sidebar.button('Start Detection')
 stop_button = st.sidebar.button('Stop Detection', key='stop_button')
+about_us_button = st.sidebar.button('About Us')
+
 music_toggle = st.sidebar.checkbox('Enable Music', value=True)
 audio_start_time = None
 
@@ -162,8 +177,8 @@ def addSecs(tm, secs):
     return fulldate.time()
 
 
-
 if start_button:
+    placeholder.empty()
     start_time = time.time()
     stframe = st.empty()
     music_thread = None
@@ -178,7 +193,7 @@ if start_button:
 
     while True:
         if audio_start_time!=None:
-            restart_time = addSecs(audio_start_time,10)
+            restart_time = addSecs(audio_start_time,120)
             if(datetime.datetime.now().time()<restart_time):
                 if cap!=None and cap.isOpened():
                     cap.release()
