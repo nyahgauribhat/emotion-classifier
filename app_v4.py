@@ -23,7 +23,6 @@ def load_emotion_classifier():
     except Exception as e:
         st.error(f"Error loading model: {e}")
         st.stop()
-
 emotion_classifier = load_emotion_classifier()
 
 emotion_labels = ['angry','disgust', 'fear','happy', 'neutral', 'sad', 'surprised']
@@ -37,7 +36,7 @@ emotion_music = {
     'surprised': 'music/surprised.wav'
 }
 
-placeholder = st.image("static/poster.png")
+# placeholder = st.image("static/poster.png")
          
 def load_html(file_path):
     with open('static/emotion_text/' + file_path + '.html', 'r') as file:
@@ -156,29 +155,38 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-with open ('intro.html','r') as file: 
-    html_content = file.read()
+# with open ('intro.html','r') as file: 
+#     html_content = file.read()
     
 # st.markdown('<div class="header"> Emotion Detector Application </div>', unsafe_allow_html=True)
 # print(html_content)
 # st.markdown(html_content, unsafe_allow_html=True)
 
-st.sidebar.title('Controls')
-start_button = st.sidebar.button('Start Detection')
-stop_button = st.sidebar.button('Stop Detection', key='stop_button')
-about_us_button = st.sidebar.button('About Us')
+def stopMusic():
+    # progress_bar.empty()
+    pygame.mixer.music.stop()
+    st.image("static/poster.png")
 
-music_toggle = st.sidebar.checkbox('Enable Music', value=True)
-audio_start_time = None
+# def musicthreading():
+#     music_thread = threading.Thread(target=play_music, args=(label,))
+#     music_thread.start()
 
 def addSecs(tm, secs):
     fulldate = datetime.datetime(100, 1, 1, tm.hour, tm.minute, tm.second)
     fulldate = fulldate + datetime.timedelta(seconds=secs)
     return fulldate.time()
 
+audio_start_time = None
+result_html = None
 
-if start_button:
-    placeholder.empty()
+def startMusic(htmlcontent, htmlcontentarea, musicthread):
+    display_html(htmlcontent, htmlcontentarea)
+    musicthread.start()
+
+def startDetection():
+    global audio_start_time, result_html
+# if start_button:
+    # placeholder.empty()
     start_time = time.time()
     stframe = st.empty()
     music_thread = None
@@ -235,8 +243,11 @@ if start_button:
                         html_content = load_html(label)
                         html_content_area.empty()
                         display_html(html_content, html_content_area)
+                        result_html = html_content, html_content_area
                         music_thread = threading.Thread(target=play_music, args=(label,))
-                        music_thread.start()
+                        pygame.mixer.music.load(emotion_music[label])
+                        music_button = st.button('Play Music', on_click = startMusic, args = (html_content, html_content_area, music_thread),key = "music_button")
+                        # music_thread.start()
                         audio_start_time = datetime.datetime.now().time()
                         last_played_label = label
                 cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0, 255, 0), 2)
@@ -248,12 +259,27 @@ if start_button:
         stframe.empty()
         stframe.image(img_pil, use_column_width=True)
 
-        if stop_button:
-            progress_bar.empty()
-            pygame.mixer.music.stop()
+        # print(stop_button)
+        # if stop_button:
+        #     progress_bar.empty()
+        #     pygame.mixer.music.stop()
         # time.sleep(10000)
-                
+# else: 
 
+def initialPlaceholder():
+    if 'initialload' not in st.session_state:
+        st.image("static/poster.png")
+        st.session_state['initialload'] = True
+    # elif result_html:
+    #     display_html(result_html[0], result_html[1])
+     
+initialPlaceholder()
 
+st.sidebar.title('Controls')
+start_button = st.sidebar.button('Start Detection', on_click = startDetection)
+stop_button = st.sidebar.button('Stop Detection', key='stop_button', on_click = stopMusic)
+about_us_button = st.sidebar.link_button('About Us','https://envirofound.com', help=None, type="secondary", disabled=False, use_container_width=False )
+music_toggle = st.sidebar.checkbox('Enable Music', value=True)
+# music_button = st.sidebar.button('Play Music' ,on_click = play_music)
 # cap.release()
 # cv2.destroyAllWindows()
