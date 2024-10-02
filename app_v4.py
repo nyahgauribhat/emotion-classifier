@@ -5,11 +5,11 @@ from keras.models import load_model
 from keras.preprocessing.image import img_to_array
 from PIL import Image
 import numpy as np
-import pygame
+# import pygame
 import threading
 import datetime
 
-pygame.mixer.init()
+# pygame.mixer.init()
 
 face_classifier = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
 
@@ -51,10 +51,8 @@ def display_html(content, placeholder):
 
 
 def play_music(emotion):
-    pygame.mixer.music.load(emotion_music[emotion])
-    pygame.mixer.music.play()
-    # pygame.time.wait(10000)
-    # pygame.mixer.music.stop()
+    # pygame.mixer.music.load(emotion_music[emotion])
+    # pygame.mixer.music.play()
     return True
 
 st.markdown(
@@ -62,16 +60,16 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-	html, body, [class*="css"]  {
-	font-family: 'Poppins', sans-serif;
+	*{
+	font-family: "Poppins", sans-serif;
 	}
     .stApp {
         background-color: white;
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
     }
     .st-emotion-cache-1ny7cjd
     {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     }
     .title {
         text-align: center;
@@ -79,7 +77,7 @@ st.markdown(
         font-size: 2.5em;
         margin-bottom: 20px;
         animation: fadeIn 2s;
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
     }
     .header {
         text-align: center;
@@ -90,7 +88,7 @@ st.markdown(
         font-weight: bold;
         border-radius: 10px;
         margin-bottom: 20px;
-         font-family: 'Poppins', sans-serif;
+         font-family: "Poppins", sans-serif;
     }
     .sidebar .sidebar-content {
         background-color: white:
@@ -98,13 +96,13 @@ st.markdown(
         padding: 20px;
         border-radius: 10px;
         margin-bottom: 10px;
-         font-family: 'Poppins', sans-serif;
+         font-family: "Poppins", sans-serif;
     }
     .sidebar .sidebar-title {
         font-size: 1.5em;
         font-weight: bold;
         margin-bottom: 10px;
-         font-family: 'Poppins', sans-serif;
+         font-family: "Poppins", sans-serif;
     }
     .footer {
         text-align: center;
@@ -116,13 +114,13 @@ st.markdown(
         width: 100%;
         border-radius: 10px;
         margin-top: 20px;
-         font-family: 'Poppins', sans-serif;
+         font-family: "Poppins", sans-serif;
     }
     .button {
         display: flex;
         justify-content: center;
         margin-top: 20px;
-         font-family: 'Poppins', sans-serif;
+         font-family: "Poppins", sans-serif;
     }
     .video-frame {
         display: flex;
@@ -138,7 +136,7 @@ st.markdown(
         color: #333333;
         margin-top: 20px;
         animation: fadeIn 1s;
-         font-family: 'Poppins', sans-serif;
+         font-family: "Poppins", sans-serif;
     }
     .progress {
         text-align: center;
@@ -163,8 +161,7 @@ st.markdown(
 # st.markdown(html_content, unsafe_allow_html=True)
 
 def stopMusic():
-    # progress_bar.empty()
-    pygame.mixer.music.stop()
+    # pygame.mixer.music.stop()
     st.image("static/poster.png")
 
 # def musicthreading():
@@ -206,11 +203,13 @@ def startDetection():
                 if cap!=None and cap.isOpened():
                     cap.release()
                     cv2.destroyAllWindows()
+                    musicbutton = None
                     # stframe = st.empty()
                 continue
 
         if audio_start_time!=None:
-            pygame.mixer.music.stop()
+            pass
+            # pygame.mixer.music.stop()
         cap = cv2.VideoCapture(0)
         ret, frame = cap.read()
         if not ret:
@@ -244,13 +243,15 @@ def startDetection():
                         html_content_area.empty()
                         display_html(html_content, html_content_area)
                         result_html = html_content, html_content_area
-                        music_thread = threading.Thread(target=play_music, args=(label,))
-                        pygame.mixer.music.load(emotion_music[label])
                         if musicbutton == None:
-                            musicbutton = st.button('Play Music', on_click = startMusic, args = (html_content, html_content_area, music_thread))
-                        # music_thread.start()
-                        audio_start_time = datetime.datetime.now().time()
-                        last_played_label = label
+                            musicbutton = st.audio(emotion_music[label], format = "audio/wav", loop = False)
+                        # music_thread = threading.Thread(target=play_music, args=(label,))
+                        # # pygame.mixer.music.load(emotion_music[label])
+                        # if musicbutton == None:
+                        #     musicbutton = st.button('Play Music', on_click = startMusic, args = (html_content, html_content_area, music_thread))
+                        # # music_thread.start()
+                            audio_start_time = datetime.datetime.now().time()
+                            last_played_label = label
                 cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0, 255, 0), 2)
             else:
                 cv2.putText(frame, 'no faces', (30, 80), cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0, 255, 0), 2)
