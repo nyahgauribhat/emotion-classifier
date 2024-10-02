@@ -180,6 +180,20 @@ def startMusic(htmlcontent, htmlcontentarea, musicthread):
     display_html(htmlcontent, htmlcontentarea)
     musicthread.start()
 
+@st.cache_resource
+def getCameraIndex():
+    i=10
+    index = 0
+    cap = None
+    while i>0:
+        cap = cv2.VideoCapture(index)
+        if cap.read()[0]:
+            cap.release()
+            break
+        i=i-1 
+        index+=1
+    return index
+
 def startDetection():
     global audio_start_time, result_html
 # if start_button:
@@ -206,11 +220,8 @@ def startDetection():
                     # musicbutton = None
                     # stframe = st.empty()
                 continue
-
-        if audio_start_time!=None:
-            pass
-            # pygame.mixer.music.stop()
-        cap = cv2.VideoCapture(0)
+       
+        cap = cv2.VideoCapture(getCameraIndex())
         ret, frame = cap.read()
         if not ret:
             st.error("Error: Could not read frame from video capture.")
