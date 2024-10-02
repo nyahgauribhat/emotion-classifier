@@ -8,6 +8,8 @@ import numpy as np
 # import pygame
 import threading
 import datetime
+from streamlit_webrtc import webrtc_streamer
+webrtc_streamer(key="sample")
 
 # pygame.mixer.init()
 
