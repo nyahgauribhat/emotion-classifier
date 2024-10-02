@@ -198,7 +198,7 @@ def startDetection():
     # if not cap.isOpened():
     #     st.error("Error: Could not open video capture.")
     #     exit()
-
+    musicbutton = None
     while True:
         if audio_start_time!=None:
             restart_time = addSecs(audio_start_time,120)
@@ -211,7 +211,7 @@ def startDetection():
 
         if audio_start_time!=None:
             pygame.mixer.music.stop()
-        cap = cv2.VideoCapture(1)
+        cap = cv2.VideoCapture(0)
         ret, frame = cap.read()
         if not ret:
             st.error("Error: Could not read frame from video capture.")
@@ -246,7 +246,8 @@ def startDetection():
                         result_html = html_content, html_content_area
                         music_thread = threading.Thread(target=play_music, args=(label,))
                         pygame.mixer.music.load(emotion_music[label])
-                        music_button = st.button('Play Music', on_click = startMusic, args = (html_content, html_content_area, music_thread),key = "music_button")
+                        if musicbutton == None:
+                            musicbutton = st.button('Play Music', on_click = startMusic, args = (html_content, html_content_area, music_thread))
                         # music_thread.start()
                         audio_start_time = datetime.datetime.now().time()
                         last_played_label = label
