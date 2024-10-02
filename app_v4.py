@@ -198,19 +198,19 @@ def startDetection():
     musicbutton = None
     while True:
         if audio_start_time!=None:
-            restart_time = addSecs(audio_start_time,120)
+            restart_time = addSecs(audio_start_time,10)
             if(datetime.datetime.now().time()<restart_time):
                 if cap!=None and cap.isOpened():
                     cap.release()
                     cv2.destroyAllWindows()
-                    musicbutton = None
+                    # musicbutton = None
                     # stframe = st.empty()
                 continue
 
         if audio_start_time!=None:
             pass
             # pygame.mixer.music.stop()
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(1)
         ret, frame = cap.read()
         if not ret:
             st.error("Error: Could not read frame from video capture.")
@@ -250,8 +250,10 @@ def startDetection():
                         # if musicbutton == None:
                         #     musicbutton = st.button('Play Music', on_click = startMusic, args = (html_content, html_content_area, music_thread))
                         # # music_thread.start()
-                            audio_start_time = datetime.datetime.now().time()
-                            last_played_label = label
+                        else: 
+                           musicbutton.audio(emotion_music[label])
+                        audio_start_time = datetime.datetime.now().time()
+                        last_played_label = label
                 cv2.putText(frame, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0, 255, 0), 2)
             else:
                 cv2.putText(frame, 'no faces', (30, 80), cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0, 255, 0), 2)
