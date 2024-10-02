@@ -220,8 +220,9 @@ def startDetection():
                     # musicbutton = None
                     # stframe = st.empty()
                 continue
-       
-        cap = cv2.VideoCapture(getCameraIndex())
+        index = getCameraIndex()
+        cap = cv2.VideoCapture(index)
+        print(index)
         ret, frame = cap.read()
         if not ret:
             st.error("Error: Could not read frame from video capture.")
