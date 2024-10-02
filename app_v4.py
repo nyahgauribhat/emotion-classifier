@@ -210,7 +210,7 @@ def startDetection():
         if audio_start_time!=None:
             pass
             # pygame.mixer.music.stop()
-        cap = cv2.VideoCapture(1)
+        cap = cv2.VideoCapture(0)
         ret, frame = cap.read()
         if not ret:
             st.error("Error: Could not read frame from video capture.")
