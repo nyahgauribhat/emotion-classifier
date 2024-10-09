@@ -24,7 +24,7 @@ emotion_music = {'angry':'music/angry.mp3',
                  'surprised' :'music/surprised.mp3' }
 
 def load_html(file_path):
-    with open('emotion_text/'+file_path+'.html', 'r') as file:
+    with open('static/emotion_text/' + file_path + '.html', 'r') as file:
         return file.read()
 
 # Function to display the HTML content in Streamlit
@@ -133,8 +133,8 @@ st.sidebar.title('Controls')
 start_button = st.sidebar.button('Start Detection')
 stop_button = st.sidebar.button('Stop Detection',key = 'stop_button')
 music_toggle = st.sidebar.checkbox('Enable Music', value = True)
-cap=cv2.VideoCapture(0)
-# cap=cv2.VideoCapture('videos/emovideo2.mov')
+# cap=cv2.VideoCapture(0)
+cap=cv2.VideoCapture('videos/emovideo2.mov')
 if not cap.isOpened():
     print("Error: Could not open video capture.")
     exit()

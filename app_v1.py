@@ -43,7 +43,7 @@ def play_music(emotion):
 st.title("Real-Time Emotion Detector")
 
 # Create a video capture object
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 # start_detection = st.button("Start Detection")
 # stop_detection = False

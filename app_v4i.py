@@ -9,7 +9,7 @@ import numpy as np
 import threading
 import datetime
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, RTCConfiguration
-# webrtc_streamer(key="sample")
+webrtc_streamer(key="sample")
 
 # pygame.mixer.init()
 
@@ -216,7 +216,7 @@ def startDetection():
     musicbutton = None
     while True:
         if audio_start_time!=None:
-            restart_time = addSecs(audio_start_time,120)
+            restart_time = addSecs(audio_start_time,10)
             if(datetime.datetime.now().time()<restart_time):
                 if cap!=None and cap.isOpened():
                     cap.release()
@@ -293,7 +293,7 @@ def initialPlaceholder():
         st.session_state['initialload'] = True
     # elif result_html:
     #     display_html(result_html[0], result_html[1])
-
+     
 initialPlaceholder()  
 
 st.sidebar.title('Controls')
