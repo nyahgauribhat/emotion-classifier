@@ -29,11 +29,10 @@ def load_emotion_classifier():
 
 emotion_classifier = load_emotion_classifier()
 
-emotion_labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprised']
+emotion_labels = ['angry', 'disgust', 'happy', 'neutral', 'sad', 'surprised']
 emotion_music = {
     'angry': 'music/angry.wav',
     'disgust': 'music/angry.wav',
-    'fear': 'music/angry.wav',
     'happy': 'music/happy.wav',
     'neutral': 'music/neutral.wav',
     'sad': 'music/sad.wav',
@@ -70,7 +69,7 @@ class EmotionProcessor(VideoProcessorBase):
         self.label = None
         self.music_toggle = True
         self.last_played_time = 0  # Track the last time music was played
-        self.play_interval_seconds = 5
+        self.play_interval_seconds = 150
         self.current_emotion = None
         self.emotion_change = False
         self.current_frame = None
