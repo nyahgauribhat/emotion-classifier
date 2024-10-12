@@ -29,10 +29,11 @@ def load_emotion_classifier():
 
 emotion_classifier = load_emotion_classifier()
 
-emotion_labels = ['angry', 'disgust', 'happy', 'neutral', 'sad', 'surprised']
+emotion_labels = ['angry', 'disgust', 'fear','happy', 'neutral', 'sad', 'surprised']
 emotion_music = {
     'angry': 'music/angry.wav',
     'disgust': 'music/angry.wav',
+    'fear' : 'music/angry.wav',
     'happy': 'music/happy.wav',
     'neutral': 'music/neutral.wav',
     'sad': 'music/sad.wav',
