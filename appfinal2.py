@@ -70,15 +70,17 @@ class EmotionProcessor(VideoProcessorBase):
         self.label = None
         self.music_toggle = True
         self.last_played_time = 0  # Track the last time music was played
-        self.play_interval_seconds = 120
+        self.play_interval_seconds = 5
         self.current_emotion = None
         self.emotion_change = False
         self.current_frame = None
+        self.first_detection = True
 
     def recv(self, frame):
         current_time = time.time()
 
-        if ((current_time - self.last_played_time) > self.play_interval_seconds) or (self.last_played_time==0):
+        if ((current_time - self.last_played_time) > self.play_interval_seconds) or self.first_detection is True:
+            self.first_detection = False
             img = frame.to_ndarray(format="bgr24")
             label, face_rect = self.detect_emotion(img)
             print(label)
