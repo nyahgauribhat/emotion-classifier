@@ -216,7 +216,7 @@ st.markdown(
 )
 
 # WebRTC Streamer
-def stopMusic():
+def stopMusic():  
     st.session_state.is_running = False
     poster_image.image("static/poster.png")
 
