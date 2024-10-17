@@ -77,10 +77,9 @@ class EmotionProcessor(VideoProcessorBase):
         self.first_detection = True
 
     def recv(self, frame):
-        current_time = time.time()
+        current_time = time.time() 
 
-        if ((current_time - self.last_played_time) > self.play_interval_seconds) or self.first_detection is True:
-            self.first_detection = False
+        if((current_time - self.last_played_time) > self.play_interval_seconds):
             img = frame.to_ndarray(format="bgr24")
             label, face_rect = self.detect_emotion(img)
             print(label)
