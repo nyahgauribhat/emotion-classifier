@@ -11,6 +11,7 @@ import av
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, RTCConfiguration
 import streamlit.components.v1 as components
 
+# Load face classifier
 face_classifier = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
 
 poster_image = st.empty()
@@ -51,17 +52,10 @@ def load_html(file_path):
     with open('static/emotion_text/' + file_path + '.html', 'r') as file:
         return file.read()
 
-# def display_html(content, placeholder):
-
 def display_html(content):
     if 'html_placeholder' not in st.session_state:
         st.session_state.html_placeholder = st.empty()
     st.session_state.html_placeholder.html(content)
-
-
-# def display_html(content):
-#     html_placeholder = st.empty()
-#     html_placeholder = components.html(content, height=500, scrolling=True)
 
 class EmotionProcessor(VideoProcessorBase):
     def __init__(self):
@@ -74,33 +68,34 @@ class EmotionProcessor(VideoProcessorBase):
         self.current_emotion = None
         self.emotion_change = False
         self.current_frame = None
-        self.count_time = 1
-        self.first_time = None
+        self.first_detection = True  # Track if it's the first detection
 
     def recv(self, frame):
         current_time = time.time()
-        # if(self.count_time >0):
-        #     self.first_time = current_time
-        #     self.count_time -=1
-        if ((current_time - self.last_played_time) > self.play_interval_seconds) or self.first_time is None:
-            self.first_time = 10
 
-            img = frame.to_ndarray(format="bgr24")
-            label, face_rect = self.detect_emotion(img)
-            print(label)
-            if label != self.current_emotion:
-                self.emotion_change = True
-            self.current_emotion = label
-            if label is not None:
-                x, y, w, h = face_rect
-                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-            self.last_played_time = time.time()
-            self.current_frame = img
-            return av.VideoFrame.from_ndarray(img, format="bgr24")
-        else:
-            return av.VideoFrame.from_ndarray(self.current_frame, format="bgr24")
+        img = frame.to_ndarray(format="bgr24")
+        label, face_rect = self.detect_emotion(img)
 
+        if label != self.current_emotion:
+            self.emotion_change = True
+        self.current_emotion = label
+
+        if label is not None:
+            x, y, w, h = face_rect
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+            # Play music immediately on first detection
+            if self.first_detection:
+                play_music(label)
+                self.first_detection = False
+                self.last_played_time = current_time
+            elif (current_time - self.last_played_time) > self.play_interval_seconds:
+                play_music(label)
+                self.last_played_time = current_time
+
+        self.current_frame = img
+        return av.VideoFrame.from_ndarray(img, format="bgr24")
 
     def detect_emotion(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -120,14 +115,6 @@ class EmotionProcessor(VideoProcessorBase):
                 return emotion_label, (x, y, w, h)
 
         return None, None
-    def should_play_music(self):
-        # Check if it's time to play music again
-        if self.last_played_time is None:
-            return True  # No previous time, allow to play
-        elapsed_time = time.time() - self.last_played_time
-        if elapsed_time > self.play_interval_seconds:
-            return True
-        return False
 
 st.markdown(
     """
@@ -226,33 +213,18 @@ def stopMusic():
     st.session_state.is_running = False
     poster_image.image("static/poster.png")
 
-def addSecs(tm, secs):
-    fulldate = datetime.datetime(100, 1, 1, tm.hour, tm.minute, tm.second)
-    fulldate = fulldate + datetime.timedelta(seconds=secs)
-    return fulldate.time()
-
-def startMusic(htmlcontent, htmlcontentarea, musicthread):
-    display_html(htmlcontent, htmlcontentarea)
-    musicthread.start()
-
 def start_running():
     st.session_state.is_running = True
 
 # Display initial placeholder image
 def initialPlaceholder():
-    if st.session_state.is_running ==False:
+    if st.session_state.is_running == False:
          poster_image.image("static/poster.png")
-
-
-    # if 'initialload' not in st.session_state:
-    #     st.session_state['initialload'] = True
-    #     st.image("static/poster.png")
-       
 
 initialPlaceholder()
 RTC_CONFIGURATION = RTCConfiguration({"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
 
-if st.session_state.is_running ==True:
+if st.session_state.is_running == True:
     webrtc_ctx = webrtc_streamer(
         key="emotion-detection",
         video_processor_factory=EmotionProcessor,
@@ -260,27 +232,23 @@ if st.session_state.is_running ==True:
         media_stream_constraints={"video": True, "audio": False},
         async_processing=True
     )
+
 st.sidebar.title('Controls')
-start_button = st.sidebar.button('Start Detection', on_click=start_running)  # Removed on_click to let WebRTC handle it
+start_button = st.sidebar.button('Start Detection', on_click=start_running)
 stop_button = st.sidebar.button('Stop Detection', on_click=stopMusic)
 about_us_button = st.sidebar.link_button('About Us','https://sangeetandi.com', help=None, type="secondary", disabled=False, use_container_width=False)
 music_toggle = st.sidebar.checkbox('Enable Music', value=True)
 
 emotion_text = st.empty()
-music = st.empty()
-
 html_content_area = st.empty()
-if st.session_state.is_running ==True:
+if st.session_state.is_running == True:
     while webrtc_ctx.video_processor:
         if webrtc_ctx.video_processor.current_emotion is not None and webrtc_ctx.video_processor.emotion_change:
-            print("yes")
             html_content = load_html(webrtc_ctx.video_processor.current_emotion)
             html_content_area.empty()
-            # display_html(html_content, html_content_area)
             display_html(html_content)
-            result_html = html_content, html_content_area       
-            # Code if emotion detected
-            # Play music only if the interval has passed and music toggle is enabled
             emotion_text.markdown(f'<p class="emotion-text">Detected Emotion: {webrtc_ctx.video_processor.current_emotion}</p>', unsafe_allow_html=True)
-            music.audio(emotion_music[webrtc_ctx.video_processor.current_emotion], format = "audio/wav", loop = False)
-        time.sleep(webrtc_ctx.video_processor.play_interval_seconds)
+
+        time.sleep(0.1)  # Small delay to avoid high CPU usage
+
+                
